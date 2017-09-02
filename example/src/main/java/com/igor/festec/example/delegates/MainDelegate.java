@@ -29,13 +29,14 @@ public class MainDelegate extends LatteDelegate {
     }
 
 
-    public static void testRestClient() {
+    public void testRestClient() {
         RestClient.builder()
                 .url("http://www.julyedu.com/")
+                .loader(getContext())
                 .success(new ISuccess() {
                     @Override
                     public void onSuccess(String response) {
-                        Toast.makeText(Latte.getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Latte.getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .failure(new IFailure() {
