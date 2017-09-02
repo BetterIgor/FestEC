@@ -1,6 +1,12 @@
 package com.igor.latte.app;
 
-import java.util.WeakHashMap;
+import com.joanzapata.iconify.IconFontDescriptor;
+import com.joanzapata.iconify.Iconify;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Igor on 2017/8/31.
@@ -8,8 +14,9 @@ import java.util.WeakHashMap;
 
 public class Configurator {
 
-    private static final WeakHashMap<String, Object> LATTE_CONFIGS
-            = new WeakHashMap<>();
+    private static final Map<String, Object> LATTE_CONFIGS = new HashMap<>();
+
+    private static final List<IconFontDescriptor> ICON_FONTS = new ArrayList<>();
 
     private Configurator() {
         LATTE_CONFIGS.put(ConfigType.CONFIG_READY.name(), false);
@@ -25,6 +32,7 @@ public class Configurator {
     }
 
     public final void configure() {
+        initIconFonts();
         LATTE_CONFIGS.put(ConfigType.CONFIG_READY.name(), true);
     }
 
@@ -41,12 +49,28 @@ public class Configurator {
         return (T) LATTE_CONFIGS.get(key.name());
     }
 
-    final WeakHashMap<String, Object> getLatteConfigs() {
+    final Map<String, Object> getLatteConfigs() {
         return LATTE_CONFIGS;
     }
 
     public final Configurator withApiHost(String host) {
         LATTE_CONFIGS.put(ConfigType.API_HOST.name(), host);
+        return this;
+    }
+
+    private void initIconFonts() {
+        if (ICON_FONTS.size() > 0) {
+            final Iconify.IconifyInitializer initializer = Iconify.with(ICON_FONTS.get(0));
+            final int len = ICON_FONTS.size();
+
+            for (int i = 1; i < len; i++) {
+                initializer.with(ICON_FONTS.get(i));
+            }
+        }
+    }
+
+    public Configurator withIconFont(IconFontDescriptor descriptor) {
+        ICON_FONTS.add(descriptor);
         return this;
     }
 }
