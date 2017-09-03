@@ -8,6 +8,7 @@ import com.igor.latte.net.callback.IRequest;
 import com.igor.latte.net.callback.ISuccess;
 import com.igor.latte.ui.LoaderStyle;
 
+import java.io.File;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -20,7 +21,6 @@ import okhttp3.RequestBody;
 
 public class RestClientBuilder {
 
-
     private String mUrl;
     private static Map<String, Object> PARAMS = RestCreator.getParams();
     private ISuccess mISuccess;
@@ -28,8 +28,13 @@ public class RestClientBuilder {
     private IError mIError;
     private IRequest mIRequest;
     private RequestBody mBody;
+    private File mFile;
     private Context mContext;
     private LoaderStyle mLoaderStyle;
+
+    private String mDownloadDir;
+    private String mDownloadFileName;
+    private String mDownloadFileExtension;
 
     RestClientBuilder() {
 
@@ -52,6 +57,31 @@ public class RestClientBuilder {
 
     public RestClientBuilder raw(String raw) {
         this.mBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), raw);
+        return this;
+    }
+
+    public RestClientBuilder file(String filePath) {
+        this.mFile = new File(filePath);
+        return this;
+    }
+
+    public RestClientBuilder file(File file) {
+        this.mFile = file;
+        return this;
+    }
+
+    public RestClientBuilder downloadDir(String dir) {
+        this.mDownloadDir = dir;
+        return this;
+    }
+
+    public RestClientBuilder downloadFileName(String name) {
+        this.mDownloadFileName = name;
+        return this;
+    }
+
+    public RestClientBuilder downloadFileExtension(String extension) {
+        this.mDownloadFileExtension = extension;
         return this;
     }
 
@@ -89,6 +119,7 @@ public class RestClientBuilder {
 
     public final RestClient build() {
         return new RestClient(mUrl, PARAMS, mIRequest, mISuccess, mIFailure,
-                mIError, mBody, mContext, mLoaderStyle);
+                mIError, mBody, mFile, mDownloadDir, mDownloadFileName,
+                mDownloadFileExtension, mContext, mLoaderStyle);
     }
 }

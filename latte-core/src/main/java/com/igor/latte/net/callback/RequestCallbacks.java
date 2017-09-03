@@ -1,7 +1,5 @@
 package com.igor.latte.net.callback;
 
-import android.os.Handler;
-
 import com.igor.latte.ui.LatteLoader;
 import com.igor.latte.ui.LoaderStyle;
 
