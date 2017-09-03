@@ -36,7 +36,7 @@ public class MainDelegate extends LatteDelegate {
                 .success(new ISuccess() {
                     @Override
                     public void onSuccess(String response) {
-//                        Toast.makeText(Latte.getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Latte.getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .failure(new IFailure() {
