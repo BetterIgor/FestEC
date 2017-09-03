@@ -2,8 +2,6 @@ package com.igor.latte.app;
 
 import android.content.Context;
 
-import java.util.Map;
-
 /**
  * Created by Igor on 2017/8/31.
  */
@@ -11,16 +9,21 @@ import java.util.Map;
 public final class Latte {
 
     public static Configurator init(Context context) {
-        getConfigurations().put(ConfigType.APPLICATION_CONTEXT.name(),
-                context.getApplicationContext());
+        getConfigurator()
+                .getLatteConfigs()
+                .put(ConfigKeys.APPLICATION_CONTEXT, context.getApplicationContext());
+        return getConfigurator();
+    }
+
+    public static Configurator getConfigurator() {
         return Configurator.getInstance();
     }
 
-    public static Map<String, Object> getConfigurations() {
-        return Configurator.getInstance().getLatteConfigs();
+    public static <T> T getConfiguration(Object key) {
+        return getConfigurator().getConfiguration(key);
     }
 
     public static Context getApplicationContext() {
-        return (Context) getConfigurations().get(ConfigType.APPLICATION_CONTEXT.name());
+        return getConfiguration(ConfigKeys.APPLICATION_CONTEXT);
     }
 }

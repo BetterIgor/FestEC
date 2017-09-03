@@ -4,9 +4,10 @@ package com.igor.latte.app;
  * Created by Igor on 2017/8/31.
  */
 
-public enum ConfigType {
+public enum ConfigKeys {
     API_HOST,
     APPLICATION_CONTEXT,
     CONFIG_READY,
-    ICON
+    ICON,
+    INTERCEPTOR
 }
