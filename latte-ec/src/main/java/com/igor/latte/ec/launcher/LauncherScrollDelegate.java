@@ -1,14 +1,19 @@
 package com.igor.latte.ec.launcher;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
+import com.igor.latte.app.AccountManager;
+import com.igor.latte.app.IUserChecker;
 import com.igor.latte.delegates.LatteDelegate;
 import com.igor.latte.ec.R;
+import com.igor.latte.ui.launcher.ILauncherListener;
 import com.igor.latte.ui.launcher.LauncherHolderCreator;
+import com.igor.latte.ui.launcher.OnLauncherFinishTag;
 import com.igor.latte.ui.launcher.ScrollLauncherTag;
 import com.igor.latte.utils.storage.LattePreference;
 
@@ -41,6 +46,16 @@ public class LauncherScrollDelegate extends LatteDelegate implements OnItemClick
                 .setCanLoop(true);
     }
 
+    private ILauncherListener mILauncherListener = null;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof ILauncherListener) {
+            mILauncherListener = (ILauncherListener) activity;
+        }
+    }
+
     @Override
     public Object setLayout() {
         mConvenientBanner = new ConvenientBanner<>(getContext());
@@ -59,6 +74,21 @@ public class LauncherScrollDelegate extends LatteDelegate implements OnItemClick
         if (position == INTEGERS.size() - 1) {
             LattePreference.setAppFlag(ScrollLauncherTag.HAS_FIRST_LAUNCHER_APP.name(), true);
             // 检查登录的状态
+            AccountManager.checkAccount(new IUserChecker() {
+                @Override
+                public void onSignIn() {
+                    if (mILauncherListener != null) {
+                        mILauncherListener.onLauncherFinish(OnLauncherFinishTag.SIGNED);
+                    }
+                }
+
+                @Override
+                public void onNotSignIn() {
+                    if (mILauncherListener != null) {
+                        mILauncherListener.onLauncherFinish(OnLauncherFinishTag.NOT_SIGNED);
+                    }
+                }
+            });
         }
     }
 }

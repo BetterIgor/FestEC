@@ -1,15 +1,20 @@
 package com.igor.latte.ec.launcher;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 
+import com.igor.latte.app.AccountManager;
+import com.igor.latte.app.IUserChecker;
 import com.igor.latte.delegates.LatteDelegate;
 import com.igor.latte.ec.R;
 import com.igor.latte.ec.R2;
 import com.igor.latte.timer.BaseTimerTask;
 import com.igor.latte.timer.ITimerListener;
+import com.igor.latte.ui.launcher.ILauncherListener;
+import com.igor.latte.ui.launcher.OnLauncherFinishTag;
 import com.igor.latte.ui.launcher.ScrollLauncherTag;
 import com.igor.latte.utils.storage.LattePreference;
 
@@ -35,6 +40,16 @@ public class LauncherDelegate extends LatteDelegate implements ITimerListener {
     @OnClick(R2.id.tv_launcher_timer)
     void onClickTimerView() {
         checkValid();
+    }
+
+    private ILauncherListener mILauncherListener = null;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof ILauncherListener) {
+            mILauncherListener = (ILauncherListener) activity;
+        }
     }
 
     private void initTimer() {
@@ -65,7 +80,23 @@ public class LauncherDelegate extends LatteDelegate implements ITimerListener {
         if (!LattePreference.getAppFlag(ScrollLauncherTag.HAS_FIRST_LAUNCHER_APP.name())) {
             start(new LauncherScrollDelegate(), SINGLETASK);
         } else {
+
             // 检查登录状态
+            AccountManager.checkAccount(new IUserChecker() {
+                @Override
+                public void onSignIn() {
+                    if (mILauncherListener != null) {
+                        mILauncherListener.onLauncherFinish(OnLauncherFinishTag.SIGNED);
+                    }
+                }
+
+                @Override
+                public void onNotSignIn() {
+                    if (mILauncherListener != null) {
+                        mILauncherListener.onLauncherFinish(OnLauncherFinishTag.NOT_SIGNED);
+                    }
+                }
+            });
         }
     }
 
