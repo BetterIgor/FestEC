@@ -35,11 +35,13 @@ public class MainActivity extends ProxyActivity implements
 
     @Override
     public void onSignInSuccess() {
+        startWithPop(new MainDelegate());
         Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSignUpSuccess() {
+        startWithPop(new MainDelegate());
         Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
     }
 
